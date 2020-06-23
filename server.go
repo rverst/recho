@@ -42,11 +42,21 @@ func logRequest(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	if r.Method == http.MethodOptions {
+		w.Header().Add("Access-Control-Allow-Origin", "*")
+		w.Header().Add("Access-Control-Allow-Headers", "*")
+		w.Header().Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE ,OPTIONS")
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+
 	buf := new(bytes.Buffer)
 	i, err := buf.ReadFrom(r.Body)
 	if err != nil {
 		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 	if i > 0 {
 		fmt.Print("\nbody:\n")
